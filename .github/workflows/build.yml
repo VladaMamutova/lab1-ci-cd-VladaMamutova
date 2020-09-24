@@ -27,4 +27,4 @@ jobs:
         with:
           build-root-directory: integration-tests
           wrapper-directory: integration-tests
-          arguments: clean test -PtargetUrl=https://rsoi-person-service.herokuapp.com
+          arguments: clean test -PtargetUrl=https://mamutova-person-service.herokuapp.com
