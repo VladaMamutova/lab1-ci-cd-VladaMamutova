@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://ec2-35-169-92-231.compute-1.amazonaws.com:5432/d8jchinmnuubgt?sslmode=require&user=tygfczypjnruym&password=d30843e623ff51e2f3b396b9d17dd0ee3b903cf52fdec8181bdee153083dc7d9
+    username: tygfczypjnruym
+    password: d30843e623ff51e2f3b396b9d17dd0ee3b903cf52fdec8181bdee153083dc7d9
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
