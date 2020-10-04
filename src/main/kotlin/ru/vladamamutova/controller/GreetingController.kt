@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 class GreetingController {
-    @GetMapping("/greeting")
+    @GetMapping("/")
     fun greeting(
     @RequestParam(name="name", required=false, defaultValue="user") name: String,
     model: Model

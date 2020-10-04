@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository
 import ru.vladamamutova.domain.Person
 
 @Repository
-interface PersonRepository : CrudRepository<Person, Long> {
+interface PersonRepository : CrudRepository<Person, Int> {
 }

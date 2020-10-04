@@ -8,12 +8,12 @@ class Person {
         @GeneratedValue(strategy = GenerationType.AUTO)
         // Т. к. схема базы данных создаётся реализацией JPA по описанию сущностей,
         // то стратегия генерации значений - автоматическая.
-        private var id: Long? = null
+        var id: Int? = null
 
-        private var name: String? = null
-        private var age: Int? = null
-        private var address: String? = null
-        private var work: String? = null
+        var name: String? = null
+        var age: Int? = null
+        var address: String? = null
+        var work: String? = null
 
         constructor()
 
