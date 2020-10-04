@@ -13,7 +13,6 @@ import ru.vladamamutova.service.PersonService
 // and as a result, simplifies the controller implementation.
 @RestController
 class PersonController(@Autowired private val personService: PersonService) {
-
     @PostMapping("/persons")
     fun createPerson(@RequestBody person: Person): ResponseEntity<Void> {
         val id = personService.create(person)
@@ -22,8 +21,6 @@ class PersonController(@Autowired private val personService: PersonService) {
                 .path("/{id}")
                 .buildAndExpand(id)
                 .toUri()).build()
-        // or ResponseEntity.status(CREATED).header(HttpHeaders.LOCATION,
-        // <location_string>).build()
     }
 
     @GetMapping("/persons")
