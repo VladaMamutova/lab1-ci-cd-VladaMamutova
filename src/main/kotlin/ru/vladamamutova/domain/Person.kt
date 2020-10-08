@@ -15,7 +15,7 @@ class Person {
         var address: String? = null
         var work: String? = null
 
-        constructor()
+        constructor() // обязателен для JPA
 
         constructor(name: String?, age: Int?, address: String?, work: String?) {
                 this.name = name

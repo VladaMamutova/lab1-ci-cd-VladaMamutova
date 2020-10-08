@@ -1,6 +1,5 @@
 package ru.vladamamutova.service
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.vladamamutova.domain.Person
 import ru.vladamamutova.exception.PersonNotFoundException
@@ -20,27 +19,22 @@ class PersonServiceImpl(private val repository: PersonRepository)
     }
 
     override fun getById(id: Int): Person {
-        val person = repository.findByIdOrNull(id)
-        if (person == null) {
+        return repository.findById(id).orElseThrow {
             throw PersonNotFoundException(id)
-        } else {
-            return person
         }
     }
 
     override fun update(id: Int, person: Person) {
-        val existingPerson = repository.findByIdOrNull(id)
-        if (existingPerson == null) {
-            throw PersonNotFoundException(id)
-        } else {
-            existingPerson.id = id
-            existingPerson.name = person.name ?: existingPerson.name
-            existingPerson.age = person.age ?: existingPerson.age
-            existingPerson.address = person.address ?: existingPerson.address
-            existingPerson.work = person.work ?: existingPerson.work
+        val existingPerson = repository.findById(id)
+                .orElseThrow { throw PersonNotFoundException(id) }
 
-            repository.save(person)
-        }
+        existingPerson.id = id
+        existingPerson.name = person.name ?: existingPerson.name
+        existingPerson.age = person.age ?: existingPerson.age
+        existingPerson.address = person.address ?: existingPerson.address
+        existingPerson.work = person.work ?: existingPerson.work
+
+        repository.save(person)
     }
 
     override fun delete(id: Int) {
