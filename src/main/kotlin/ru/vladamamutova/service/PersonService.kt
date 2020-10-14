@@ -1,11 +1,12 @@
 package ru.vladamamutova.service
 
-import ru.vladamamutova.domain.Person
+import ru.vladamamutova.domain.PersonRequest
+import ru.vladamamutova.domain.PersonResponse
 
 interface PersonService {
-    fun create(person: Person): Int
-    fun getAll(): List<Person>
-    fun getById(id: Int): Person
-    fun update(id: Int, person: Person)
+    fun create(request: PersonRequest): Int
+    fun getAll(): List<PersonResponse>
+    fun getById(id: Int): PersonResponse
+    fun update(id: Int, request: PersonRequest): PersonResponse
     fun delete(id: Int)
 }
