@@ -1,3 +1,3 @@
 package ru.vladamamutova.domain
 
-class ErrorResponse(val message: String)
+open class ErrorResponse(open val message: String)

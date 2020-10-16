@@ -1,7 +1,6 @@
 package ru.vladamamutova.controller
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -9,6 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import ru.vladamamutova.domain.PersonRequest
 import ru.vladamamutova.domain.PersonResponse
 import ru.vladamamutova.service.PersonService
+import javax.validation.Valid
 
 
 // @RestController includes the @Controller and @ResponseBody annotations
@@ -16,8 +16,13 @@ import ru.vladamamutova.service.PersonService
 @RestController
 class PersonController(@Autowired private val personService: PersonService) {
     @PostMapping("/persons", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createPerson(
-            @RequestBody request: PersonRequest): ResponseEntity<Void> {
+    // When Spring Boot finds an argument annotated with @Valid,
+    // it automatically bootstraps the default JSR 380 implementation
+    // — Hibernate Validator — and validates the argument.
+    // When the target argument fails to pass the validation,
+    // Spring Boot throws a MethodArgumentNotValidException exception.
+    fun createPerson(@Valid @RequestBody request: PersonRequest):
+            ResponseEntity<Void> {
         val id = personService.create(request)
         return ResponseEntity.created(ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -36,8 +41,9 @@ class PersonController(@Autowired private val personService: PersonService) {
 
     @PatchMapping("/persons/{id}",
             consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updatePerson(@PathVariable id: Int, @RequestBody request: PersonRequest)
-            : PersonResponse {
+    fun updatePerson(@PathVariable id: Int,
+                     @Valid @RequestBody request: PersonRequest
+    ): PersonResponse {
         return personService.update(id, request)
     }
 
