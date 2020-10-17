@@ -38,4 +38,10 @@ class Person {
                 this.address = address
                 this.work = work
         }
+
+        constructor(id: Int?, name: String?, age: Int?, address: String?,
+                    work: String?
+        ) : this(name, age, address, work) {
+            this.id = id
+        }
 }
