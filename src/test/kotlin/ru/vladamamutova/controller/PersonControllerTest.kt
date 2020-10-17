@@ -8,9 +8,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
@@ -18,11 +17,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import ru.vladamamutova.config.PersonServiceTestConfiguration
 import ru.vladamamutova.domain.Person
 import ru.vladamamutova.exception.PersonNotFoundException
 import ru.vladamamutova.repository.PersonRepository
-import ru.vladamamutova.service.PersonService
-import ru.vladamamutova.service.PersonServiceImpl
 import ru.vladamamutova.utils.TestUtils
 import java.util.Optional.of
 
@@ -32,18 +30,8 @@ import java.util.Optional.of
 // @WebMvcTest will only scan beans related to Web layer,
 // like @Controller, @ControllerAdvice, WebMvcConfigurer etc.
 @WebMvcTest(PersonController::class)
+@Import(PersonServiceTestConfiguration::class)
 class PersonControllerTest {
-    @TestConfiguration
-    internal open class PersonServiceTestConfiguration {
-        @MockBean
-        private lateinit var personRepository: PersonRepository
-
-        @Bean
-        open fun personService(): PersonService {
-            return PersonServiceImpl(personRepository)
-        }
-    }
-
     companion object {
         private const val PERSON_ID = 1
         private const val URL = "/persons/"
@@ -59,7 +47,7 @@ class PersonControllerTest {
     @Test
     fun testGetPersonSuccess() {
         // prepare data and mock's behaviour
-        val person = Person(PERSON_ID, "Alice", 20, "Moscow", "Yandex")
+        val person = createValidPerson(PERSON_ID)
         // stub what a service layer should return
         `when`(personRepository.findById(any(Int::class.java)))
             .thenReturn(of(person))
@@ -86,7 +74,7 @@ class PersonControllerTest {
                 Person::class.java
         )
         assertNotNull(resultPerson)
-        assertEquals(person.id, resultPerson.id)
+        assertEquals(PERSON_ID, resultPerson.id)
     }
 
     @Test
@@ -117,7 +105,7 @@ class PersonControllerTest {
     @Test
     fun testAddPersonSuccess() {
         // prepare data and mock's behaviour
-        val person = Person(PERSON_ID, "Alice", 20, "Moscow", "Yandex")
+        val person = createValidPerson(PERSON_ID)
         `when`(personRepository.save(any(Person::class.java))).thenReturn(person)
 
         // execute
@@ -146,13 +134,12 @@ class PersonControllerTest {
 
     @Test
     fun testUpdatePersonSuccess() {
-        val person = Person("Alice", 20, "Moscow", "Yandex")
+        val person = createValidPerson(-1)
         `when`(personRepository.save(any(Person::class.java))).thenReturn(person)
         `when`(personRepository.findById(any(Int::class.java)))
             .thenReturn(of(person))
 
-        val personResult = Person(PERSON_ID, "Alice", 20, "Moscow", "Yandex")
-
+        val personResult = createValidPerson(PERSON_ID)
         mockMvc
             .perform(
                     MockMvcRequestBuilders
@@ -165,8 +152,8 @@ class PersonControllerTest {
             .andExpect(status().isOk)
             .andExpect(content().json(TestUtils.objectToJson(personResult)!!))
 
-        verify(personRepository).save(any(Person::class.java))
         verify(personRepository).findById(any(Int::class.java))
+        verify(personRepository).save(any(Person::class.java))
     }
 
     @Test
@@ -179,5 +166,9 @@ class PersonControllerTest {
 
         verify(personRepository).existsById(any(Int::class.java))
         verify(personRepository).deleteById(any(Int::class.java))
+    }
+
+    private fun createValidPerson(id: Int): Person {
+        return Person(id, "Alice", 20, "Moscow", "Yandex")
     }
 }
